@@ -1,0 +1,16 @@
+version: '3.8'
+services:
+  db:
+    image: ankane/pgvector:latest
+    container_name: tech_assistant_db_container
+    ports:
+      - "5435:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: azerty741!
+      POSTGRES_DB: tech_assistant_db
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:
