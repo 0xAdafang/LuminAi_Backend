@@ -1,16 +1,17 @@
-version: '3.8'
+
 services:
   db:
     image: ankane/pgvector:latest
-    container_name: tech_assistant_db_container
+    container_name: MyAiToolDb_container
     ports:
       - "5435:5432"
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: azerty741!
-      POSTGRES_DB: tech_assistant_db
+      POSTGRES_DB: MyAiToolDb
     volumes:
       - postgres_data:/var/lib/postgresql/data
+      - ./db/init:/docker-entrypoint-initdb.d:ro
 
 volumes:
   postgres_data:
