@@ -42,6 +42,7 @@ func main() {
 	r.Use(middleware.Recoverer)
 
 	r.Post("/api/ingest", h.HandleIngest)
+	r.Post("/api/chat", h.HandleChat)
 
 	r.Get("/health", func(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte("OK Backend - Ok DB connected"))
