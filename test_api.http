@@ -1,0 +1,17 @@
+
+POST http://localhost:8080/api/ingest
+Content-Type: application/json
+
+{
+  "url": "https://go.dev/doc/tutorial/getting-started"
+}
+
+###
+
+
+POST http://localhost:8080/api/chat
+Content-Type: application/json
+
+{
+  "question": "Quels sont les prérequis pour Go ?"
+}

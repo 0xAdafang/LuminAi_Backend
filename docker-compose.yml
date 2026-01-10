@@ -1,7 +1,7 @@
-
 services:
   db:
-    image: ankane/pgvector:latest
+
+    image: pgvector/pgvector:pg16
     container_name: MyAiToolDb_container
     ports:
       - "5435:5432"
@@ -10,8 +10,8 @@ services:
       POSTGRES_PASSWORD: azerty741!
       POSTGRES_DB: MyAiToolDb
     volumes:
-      - postgres_data:/var/lib/postgresql/data
-      - ./db/init:/docker-entrypoint-initdb.d:ro
+
+      - postgres_data_v2:/var/lib/postgresql/data
 
 volumes:
-  postgres_data:
+  postgres_data_v2:
