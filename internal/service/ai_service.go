@@ -35,12 +35,14 @@ func GenerateResponse(question string, contextText string) (string, error) {
 			Model: openai.GPT4oMini,
 			Messages: []openai.ChatCompletionMessage{
 				{
-					Role:    openai.ChatMessageRoleSystem,
-					Content: "You are an expert assistant. Answer the question using ONLY the context provided below. If the answer is not in the context, say you don't know.",
+					Role: openai.ChatMessageRoleSystem,
+
+					Content: "Tu es un assistant expert spécialisé dans l'analyse de documents. Réponds de manière précise à la question en utilisant les informations du contexte fourni. Si l'information est absente, explique poliment que tu n'as pas assez de données pour répondre.",
 				},
 				{
-					Role:    openai.ChatMessageRoleUser,
-					Content: fmt.Sprintf("Contexte: %s\n\nQuestion: %s", contextText, question),
+					Role: openai.ChatMessageRoleUser,
+
+					Content: fmt.Sprintf("--- DEBUT DU CONTEXTE ---\n%s\n--- FIN DU CONTEXTE ---\n\nQuestion de l'utilisateur : %s", contextText, question),
 				},
 			},
 		},

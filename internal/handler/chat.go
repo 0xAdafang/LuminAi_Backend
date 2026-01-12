@@ -31,15 +31,20 @@ func (h *IngestHandler) HandleChat(w http.ResponseWriter, r *http.Request) {
 	}
 
 	fmt.Printf("Nombre d'articles trouvés : %d\n", len(articles))
-	if len(articles) > 0 {
-		fmt.Printf("Meilleur match : %s (Score de similarité)\n", articles[0].Title)
-	}
 
 	contextText := "Aucun document trouvé dans la base de données."
 	if len(articles) > 0 {
 		fmt.Printf("Meilleur match : %s\n", articles[0].Title)
+
 		contextText = articles[0].Content
 	}
+
+	limit := 100
+	if len(contextText) < limit {
+		limit = len(contextText)
+	}
+
+	fmt.Printf("DEBUG CONTEXT (%d chars) : %s\n", limit, contextText[:limit])
 
 	answer, err := service.GenerateResponse(req.Question, contextText)
 
@@ -54,4 +59,5 @@ func (h *IngestHandler) HandleChat(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Encoding Error: "+err.Error(), http.StatusInternalServerError)
 		return
 	}
+
 }

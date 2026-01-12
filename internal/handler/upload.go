@@ -3,12 +3,12 @@ package handler
 import (
 	"MyAiTool/internal/models"
 	"MyAiTool/internal/service"
+	"fmt"
 	"io"
 	"net/http"
 )
 
 func (h *IngestHandler) HandleFileUpload(w http.ResponseWriter, r *http.Request) {
-
 	r.ParseMultipartForm(10 << 20)
 	file, header, err := r.FormFile("file")
 	if err != nil {
@@ -25,16 +25,26 @@ func (h *IngestHandler) HandleFileUpload(w http.ResponseWriter, r *http.Request)
 		return
 	}
 
-	embedding, err := service.GetEmbedding(text)
+	chunks := service.SplitText(text, 1000, 200)
 
-	article := models.Article{
-		Title:     header.Filename,
-		Content:   text,
-		URL:       "file://" + header.Filename,
-		Summary:   "Document PDF importé localement",
-		Embedding: embedding,
+	for i, chunk := range chunks {
+
+		embedding, err := service.GetEmbedding(chunk)
+		if err != nil {
+			continue
+		}
+
+		article := models.Article{
+
+			Title:     fmt.Sprintf("%s (Partie %d)", header.Filename, i+1),
+			Content:   chunk,
+			URL:       "file://" + header.Filename,
+			Summary:   fmt.Sprintf("Segment %d du document %s", i+1, header.Filename),
+			Embedding: embedding,
+		}
+
+		h.Repo.SaveArticle(article)
 	}
 
-	h.Repo.SaveArticle(article)
 	w.WriteHeader(http.StatusCreated)
 }

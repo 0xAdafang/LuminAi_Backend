@@ -17,7 +17,6 @@ func NewRepository(db *sql.DB) *Repository {
 
 func (r *Repository) SaveArticle(art models.Article) error {
 
-	// Construire un littéral de vecteur PostgreSQL: '[0.1,0.2,...]'
 	vecParts := make([]string, len(art.Embedding))
 	for i, v := range art.Embedding {
 		vecParts[i] = fmt.Sprintf("%f", v)
@@ -38,11 +37,12 @@ func (r *Repository) SearchSimilarArticles(queryEmbedding []float32, limit int) 
 	}
 	vecString := fmt.Sprintf("[%s]", strings.Join(vecParts, ","))
 
-	query := `SELECT id, title, summary, url FROM articles 
+	query := `SELECT id, title, content, summary, url FROM articles 
               ORDER BY embedding <=> $1::vector LIMIT $2`
 
 	rows, err := r.db.Query(query, vecString, limit)
 	if err != nil {
+
 		return nil, err
 	}
 	defer rows.Close()
@@ -50,10 +50,33 @@ func (r *Repository) SearchSimilarArticles(queryEmbedding []float32, limit int) 
 	var articles []models.Article
 	for rows.Next() {
 		var a models.Article
-		if err := rows.Scan(&a.ID, &a.Title, &a.Summary, &a.URL); err != nil {
+		if err := rows.Scan(&a.ID, &a.Title, &a.Content, &a.Summary, &a.URL); err != nil {
 			return nil, err
 		}
 		articles = append(articles, a)
 	}
 	return articles, nil
+}
+
+func (r *Repository) GetAllDocuments() ([]string, error) {
+	rows, err := r.db.Query("SELECT DISTINCT url FROM articles")
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var docs []string
+	for rows.Next() {
+		var url string
+		if err := rows.Scan(&url); err != nil {
+			return nil, err
+		}
+		docs = append(docs, url)
+	}
+	return docs, nil
+}
+
+func (r *Repository) DeleteDocument(url string) error {
+	_, err := r.db.Exec("DELETE FROM articles WHERE url = $1", url)
+	return err
 }

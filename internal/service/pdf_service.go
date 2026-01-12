@@ -21,3 +21,18 @@ func ExtractTextFromPDF(data []byte) (string, error) {
 	buf.ReadFrom(b)
 	return buf.String(), nil
 }
+
+func SplitText(text string, chunkSize int, overlap int) []string {
+	var chunks []string
+	for i := 0; i < len(text); i += chunkSize - overlap {
+		end := i + chunkSize
+		if end > len(text) {
+			end = len(text)
+		}
+		chunks = append(chunks, text[i:end])
+		if end == len(text) {
+			break
+		}
+	}
+	return chunks
+}
