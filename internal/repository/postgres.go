@@ -59,7 +59,7 @@ func (r *Repository) SearchSimilarArticles(queryEmbedding []float32, limit int) 
 }
 
 func (r *Repository) GetAllDocuments() ([]string, error) {
-	rows, err := r.db.Query("SELECT DISTINCT url FROM articles")
+	rows, err := r.db.Query("SELECT DISTINCT url FROM articles ORDER BY url")
 	if err != nil {
 		return nil, err
 	}

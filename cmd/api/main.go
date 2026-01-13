@@ -54,6 +54,8 @@ func main() {
 	r.Post("/api/ingest", h.HandleIngest)
 	r.Post("/api/chat", h.HandleChat)
 	r.Post("/api/upload", h.HandleFileUpload)
+	r.Get("/api/documents", h.HandleListDocuments)
+	r.Delete("/api/documents", h.HandleDeleteDocument)
 
 	r.Get("/health", func(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte("OK Backend - Ok DB connected"))
