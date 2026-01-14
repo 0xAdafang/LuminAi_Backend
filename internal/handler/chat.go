@@ -9,6 +9,8 @@ import (
 
 func (h *IngestHandler) HandleChat(w http.ResponseWriter, r *http.Request) {
 
+	userID := r.Context().Value(UserIDKey).(string)
+
 	var req struct {
 		Question string `json:"question"`
 	}
@@ -24,7 +26,7 @@ func (h *IngestHandler) HandleChat(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	articles, err := h.Repo.SearchSimilarArticles(queryVector, 3)
+	articles, err := h.Repo.SearchSimilarArticles(queryVector, 3, userID)
 	if err != nil {
 		http.Error(w, "Database Error :"+err.Error(), http.StatusInternalServerError)
 		return

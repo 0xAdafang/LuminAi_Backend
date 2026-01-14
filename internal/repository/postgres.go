@@ -30,7 +30,7 @@ func (r *Repository) SaveArticle(art models.Article) error {
 	return err
 }
 
-func (r *Repository) SearchSimilarArticles(queryEmbedding []float32, limit int) ([]models.Article, error) {
+func (r *Repository) SearchSimilarArticles(queryEmbedding []float32, limit int, userID string) ([]models.Article, error) {
 	vecParts := make([]string, len(queryEmbedding))
 	for i, v := range queryEmbedding {
 		vecParts[i] = fmt.Sprintf("%f", v)
@@ -38,9 +38,10 @@ func (r *Repository) SearchSimilarArticles(queryEmbedding []float32, limit int) 
 	vecString := fmt.Sprintf("[%s]", strings.Join(vecParts, ","))
 
 	query := `SELECT id, title, content, summary, url FROM articles 
+              WHERE user_id = $3
               ORDER BY embedding <=> $1::vector LIMIT $2`
 
-	rows, err := r.db.Query(query, vecString, limit)
+	rows, err := r.db.Query(query, vecString, limit, userID)
 	if err != nil {
 
 		return nil, err

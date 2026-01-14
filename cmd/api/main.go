@@ -61,6 +61,14 @@ func main() {
 		w.Write([]byte("OK Backend - Ok DB connected"))
 	})
 
+	r.Group(func(r chi.Router) {
+		r.Use(handler.AuthMiddleware)
+		r.Post("/api/ingest", h.HandleIngest)
+		r.Post("/api/chat", h.HandleChat)
+		r.Post("/api/upload", h.HandleFileUpload)
+		r.Get("/api/documents", h.HandleListDocuments)
+	})
+
 	log.Printf("Starting server on port %s", port)
 	log.Fatal(http.ListenAndServe(":"+port, r))
 

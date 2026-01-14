@@ -10,11 +10,10 @@ import (
 	_ "github.com/jackc/pgx/v5/stdlib"
 )
 
-// InitDB initialise la connexion à la base et retourne *sql.DB
 func InitDB() (*sql.DB, error) {
 	dsn := os.Getenv("DATABASE_URL")
 	if dsn == "" {
-		// construire une DSN par défaut si DATABASE_URL non défini
+
 		dsn = "postgres://postgres:postgres@localhost:5432/postgres?sslmode=disable"
 	}
 
@@ -27,7 +26,7 @@ func InitDB() (*sql.DB, error) {
 	defer cancel()
 
 	if err := db.PingContext(ctx); err != nil {
-		// log et retourner l'erreur
+
 		log.Printf("DB ping failed: %v", err)
 		return nil, err
 	}
