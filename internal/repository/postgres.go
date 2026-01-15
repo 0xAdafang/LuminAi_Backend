@@ -81,3 +81,17 @@ func (r *Repository) DeleteDocument(url string) error {
 	_, err := r.db.Exec("DELETE FROM articles WHERE url = $1", url)
 	return err
 }
+
+func (r *Repository) CreateUser(email, passwordHash string) error {
+	query := `INSERT INTO users (email, password_hash) VALUES ($1, $2)`
+	_, err := r.db.Exec(query, email, passwordHash)
+	return err
+}
+
+func (r *Repository) GetUserByEmail(email string) (int, string, string, error) {
+	var id int
+	var emailDB, hash string
+	query := `SELECT id, email, password_hash FROM users WHERE email = $1`
+	err := r.db.QueryRow(query, email).Scan(&id, &emailDB, &hash)
+	return id, emailDB, hash, err
+}
