@@ -23,10 +23,10 @@ func (r *Repository) SaveArticle(art models.Article) error {
 	}
 	vecString := fmt.Sprintf("[%s]", strings.Join(vecParts, ","))
 
-	query := `INSERT INTO articles (title, content, url, summary, embedding) 
-              VALUES ($1, $2, $3, $4, $5::vector)`
+	query := `INSERT INTO articles (title, content, url, summary, embedding, user_id) 
+              VALUES ($1, $2, $3, $4, $5::vector, $6)`
 
-	_, err := r.db.Exec(query, art.Title, art.Content, art.URL, art.Summary, vecString)
+	_, err := r.db.Exec(query, art.Title, art.Content, art.URL, art.Summary, vecString, art.UserID)
 	return err
 }
 
@@ -59,8 +59,10 @@ func (r *Repository) SearchSimilarArticles(queryEmbedding []float32, limit int, 
 	return articles, nil
 }
 
-func (r *Repository) GetAllDocuments() ([]string, error) {
-	rows, err := r.db.Query("SELECT DISTINCT url FROM articles ORDER BY url")
+func (r *Repository) GetAllDocuments(userID string) ([]string, error) {
+
+	query := "SELECT DISTINCT url FROM articles WHERE user_id = $1 ORDER BY url"
+	rows, err := r.db.Query(query, userID)
 	if err != nil {
 		return nil, err
 	}
@@ -88,10 +90,9 @@ func (r *Repository) CreateUser(email, passwordHash string) error {
 	return err
 }
 
-func (r *Repository) GetUserByEmail(email string) (int, string, string, error) {
-	var id int
-	var emailDB, hash string
+func (r *Repository) GetUserByEmail(email string) (string, string, string, error) {
+	var id, emailDB, passwordHash string
 	query := `SELECT id, email, password_hash FROM users WHERE email = $1`
-	err := r.db.QueryRow(query, email).Scan(&id, &emailDB, &hash)
-	return id, emailDB, hash, err
+	err := r.db.QueryRow(query, email).Scan(&id, &emailDB, &passwordHash)
+	return id, emailDB, passwordHash, err
 }

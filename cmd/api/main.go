@@ -51,11 +51,8 @@ func main() {
 	r.Use(middleware.Logger)
 	r.Use(middleware.Recoverer)
 
-	r.Post("/api/ingest", h.HandleIngest)
-	r.Post("/api/chat", h.HandleChat)
-	r.Post("/api/upload", h.HandleFileUpload)
-	r.Get("/api/documents", h.HandleListDocuments)
-	r.Delete("/api/documents", h.HandleDeleteDocument)
+	r.Post("/api/login", h.HandleLogin)
+	r.Post("/api/register", h.HandleRegister)
 
 	r.Get("/health", func(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte("OK Backend - Ok DB connected"))
@@ -67,6 +64,7 @@ func main() {
 		r.Post("/api/chat", h.HandleChat)
 		r.Post("/api/upload", h.HandleFileUpload)
 		r.Get("/api/documents", h.HandleListDocuments)
+		r.Delete("/api/documents", h.HandleDeleteDocument)
 	})
 
 	log.Printf("Starting server on port %s", port)

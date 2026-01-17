@@ -10,6 +10,7 @@ type Article struct {
 	Summary   string    `json:"summary"`
 	Embedding []float32 `json:"embedding,omitempty"`
 	CreatedAt time.Time `json:"created_at"`
+	UserID    string    `json:"user_id"`
 }
 
 type IngestRequest struct {

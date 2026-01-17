@@ -2,14 +2,13 @@ package handler
 
 import (
 	"encoding/json"
-	"github.com/golang-jwt/jwt/v5"
-	"golang.org/x/crypto/bcrypt"
 	"net/http"
 	"os"
 	"time"
-)
 
-var jwtKey = []byte(os.Getenv("JWT_KEY"))
+	"github.com/golang-jwt/jwt/v5"
+	"golang.org/x/crypto/bcrypt"
+)
 
 func (h *IngestHandler) HandleRegister(w http.ResponseWriter, r *http.Request) {
 	var creds struct {
@@ -41,13 +40,14 @@ func (h *IngestHandler) HandleLogin(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	expirationTime := time.Now().Add(5 * time.Minute)
+	expirationTime := time.Now().Add(24 * time.Hour)
 	claims := &jwt.MapClaims{
 		"user_id": id,
 		"exp":     expirationTime.Unix(),
 	}
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+	var jwtKey = []byte(os.Getenv("JWT_KEY"))
 	tokenString, err := token.SignedString(jwtKey)
 
 	json.NewEncoder(w).Encode(map[string]string{"token": tokenString})

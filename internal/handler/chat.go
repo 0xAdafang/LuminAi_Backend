@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"strings"
 )
 
 func (h *IngestHandler) HandleChat(w http.ResponseWriter, r *http.Request) {
@@ -34,12 +35,16 @@ func (h *IngestHandler) HandleChat(w http.ResponseWriter, r *http.Request) {
 
 	fmt.Printf("Nombre d'articles trouvés : %d\n", len(articles))
 
-	contextText := "Aucun document trouvé dans la base de données."
+	var contextBuilder strings.Builder
 	if len(articles) > 0 {
-		fmt.Printf("Meilleur match : %s\n", articles[0].Title)
-
-		contextText = articles[0].Content
+		for i, art := range articles {
+			contextBuilder.WriteString(fmt.Sprintf("--- EXTRAIT %d (Source: %s) ---\n%s\n\n", i+1, art.Title, art.Content))
+		}
+	} else {
+		contextBuilder.WriteString("Aucun article pertinent trouvé dans la base de connaissances.")
 	}
+
+	contextText := contextBuilder.String()
 
 	limit := 100
 	if len(contextText) < limit {
@@ -49,6 +54,10 @@ func (h *IngestHandler) HandleChat(w http.ResponseWriter, r *http.Request) {
 	fmt.Printf("DEBUG CONTEXT (%d chars) : %s\n", limit, contextText[:limit])
 
 	answer, err := service.GenerateResponse(req.Question, contextText)
+	if err != nil {
+		http.Error(w, "AI Error :"+err.Error(), http.StatusInternalServerError)
+		return
+	}
 
 	response := map[string]interface{}{
 		"answer":   answer,

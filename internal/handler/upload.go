@@ -9,6 +9,13 @@ import (
 )
 
 func (h *IngestHandler) HandleFileUpload(w http.ResponseWriter, r *http.Request) {
+
+	userID, ok := r.Context().Value(UserIDKey).(string)
+	if !ok {
+		http.Error(w, "User ID not found in context", http.StatusUnauthorized)
+		return
+	}
+
 	r.ParseMultipartForm(10 << 20)
 	file, header, err := r.FormFile("file")
 	if err != nil {
@@ -41,6 +48,7 @@ func (h *IngestHandler) HandleFileUpload(w http.ResponseWriter, r *http.Request)
 			URL:       "file://" + header.Filename,
 			Summary:   fmt.Sprintf("Segment %d du document %s", i+1, header.Filename),
 			Embedding: embedding,
+			UserID:    userID,
 		}
 
 		h.Repo.SaveArticle(article)

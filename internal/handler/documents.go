@@ -6,7 +6,10 @@ import (
 )
 
 func (h *IngestHandler) HandleListDocuments(w http.ResponseWriter, r *http.Request) {
-	docs, err := h.Repo.GetAllDocuments()
+
+	userID := r.Context().Value(UserIDKey).(string)
+
+	docs, err := h.Repo.GetAllDocuments(userID)
 	if err != nil {
 		http.Error(w, "Erreur lors de la récupération : "+err.Error(), http.StatusInternalServerError)
 		return

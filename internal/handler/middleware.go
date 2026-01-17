@@ -2,9 +2,12 @@ package handler
 
 import (
 	"context"
-	"github.com/golang-jwt/jwt/v5"
+	"fmt"
 	"net/http"
+	"os"
 	"strings"
+
+	"github.com/golang-jwt/jwt/v5"
 )
 
 type contextKey string
@@ -21,8 +24,13 @@ func AuthMiddleware(next http.Handler) http.Handler {
 
 		tokenString := strings.TrimPrefix(authHeader, "Bearer ")
 
+		secret := os.Getenv("JWT_KEY")
+		if secret == "" {
+			fmt.Println("CRITICAL: JWT_KEY is empty in Middleware!")
+		}
+
 		token, err := jwt.Parse(tokenString, func(t *jwt.Token) (interface{}, error) {
-			return []byte("VOTRE_SECRET_KEY"), nil
+			return []byte(os.Getenv("JWT_KEY")), nil
 		})
 
 		if err != nil {
