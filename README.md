@@ -35,11 +35,11 @@ A modern, high-end bilingual interface for document intelligence. Built with a f
 
 | Landing Page | Chat Interface |
 | :---: | :---: |
-| ![Landing](./img/page1.png) | ![Chat](./img/chat1.png) |
+| ![Landing](./docs/img/page1.png) | ![Chat](./docs/img/chat1.png) |
 
 | Bilingual Support | Secure Auth |
 | :---: | :---: |
-| ![Language Switch](./img/chat2.png) | ![Login](./img/login.png) |
+| ![Language Switch](./docs/img/chat2.png) | ![Login](./docs/img/login.png) |
 
 ## ✨ Features
 - **Bilingual Interface**: Seamlessly switch between English and French with global state management.
