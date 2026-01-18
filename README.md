@@ -1,4 +1,4 @@
-# 🚀 Lumina Backend (Go)
+# 🚀 LuminAi Backend (Go)
 
 High-performance RAG (Retrieval-Augmented Generation) engine built with Go. This service handles document ingestion, text extraction, and vector-based search.
 
