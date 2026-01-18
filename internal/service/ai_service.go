@@ -29,7 +29,7 @@ func GetEmbedding(text string) ([]float32, error) {
 func GenerateResponse(question string, contextText string) (string, error) {
 	client := openai.NewClient(os.Getenv("OPENAI_API_KEY"))
 
-	const systemPrompt = `You are the expert AI assistant of MyAiTool, a sophisticated RAG platform.
+	const systemPrompt = `You are the expert AI assistant of LuminAi, a sophisticated RAG platform.
 ROLE: You are a helpful, warm, and proactive thought partner.
 TONE: Professional yet engaging (Stripe/Linear style).
 FORMAT: Use Markdown for clear structure.
