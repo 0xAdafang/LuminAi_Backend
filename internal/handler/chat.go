@@ -33,15 +33,15 @@ func (h *IngestHandler) HandleChat(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	fmt.Printf("Nombre d'articles trouvés : %d\n", len(articles))
+	fmt.Printf("Number of items found :  %d\n", len(articles))
 
 	var contextBuilder strings.Builder
 	if len(articles) > 0 {
 		for i, art := range articles {
-			contextBuilder.WriteString(fmt.Sprintf("--- EXTRAIT %d (Source: %s) ---\n%s\n\n", i+1, art.Title, art.Content))
+			contextBuilder.WriteString(fmt.Sprintf("--- EXTRACT %d (Source: %s) ---\n%s\n\n", i+1, art.Title, art.Content))
 		}
 	} else {
-		contextBuilder.WriteString("Aucun article pertinent trouvé dans la base de connaissances.")
+		contextBuilder.WriteString("No relevant articles were found in the knowledge base.")
 	}
 
 	contextText := contextBuilder.String()

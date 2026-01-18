@@ -21,7 +21,7 @@ func (h *IngestHandler) HandleRegister(w http.ResponseWriter, r *http.Request) {
 
 	err := h.Repo.CreateUser(creds.Email, string(hashedPassword))
 	if err != nil {
-		http.Error(w, "Erreur lors de la création de l'utilisateur", http.StatusInternalServerError)
+		http.Error(w, "Error creating user", http.StatusInternalServerError)
 		return
 	}
 	w.WriteHeader(http.StatusCreated)
@@ -36,11 +36,11 @@ func (h *IngestHandler) HandleLogin(w http.ResponseWriter, r *http.Request) {
 
 	id, _, hash, err := h.Repo.GetUserByEmail(creds.Email)
 	if err != nil || bcrypt.CompareHashAndPassword([]byte(hash), []byte(creds.Password)) != nil {
-		http.Error(w, "Email ou mot de passe incorrect", http.StatusUnauthorized)
+		http.Error(w, "Incorrect email or password", http.StatusUnauthorized)
 		return
 	}
 
-	expirationTime := time.Now().Add(24 * time.Hour)
+	expirationTime := time.Now().Add(1 * time.Hour)
 	claims := &jwt.MapClaims{
 		"user_id": id,
 		"exp":     expirationTime.Unix(),

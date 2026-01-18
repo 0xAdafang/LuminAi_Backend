@@ -11,7 +11,7 @@ func (h *IngestHandler) HandleListDocuments(w http.ResponseWriter, r *http.Reque
 
 	docs, err := h.Repo.GetAllDocuments(userID)
 	if err != nil {
-		http.Error(w, "Erreur lors de la récupération : "+err.Error(), http.StatusInternalServerError)
+		http.Error(w, "Error during retrieval : "+err.Error(), http.StatusInternalServerError)
 		return
 	}
 
@@ -23,15 +23,15 @@ func (h *IngestHandler) HandleListDocuments(w http.ResponseWriter, r *http.Reque
 func (h *IngestHandler) HandleDeleteDocument(w http.ResponseWriter, r *http.Request) {
 	url := r.URL.Query().Get("url")
 	if url == "" {
-		http.Error(w, "URL du document manquante", http.StatusBadRequest)
+		http.Error(w, "Missing document URL..", http.StatusBadRequest)
 		return
 	}
 
 	if err := h.Repo.DeleteDocument(url); err != nil {
-		http.Error(w, "Erreur lors de la suppression : "+err.Error(), http.StatusInternalServerError)
+		http.Error(w, "Error during deletion : "+err.Error(), http.StatusInternalServerError)
 		return
 	}
 
 	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(map[string]string{"message": "Document supprimé avec succès"})
+	json.NewEncoder(w).Encode(map[string]string{"message": "Document successfully deleted"})
 }

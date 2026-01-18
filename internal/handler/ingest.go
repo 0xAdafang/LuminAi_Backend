@@ -13,6 +13,9 @@ type IngestHandler struct {
 }
 
 func (h *IngestHandler) HandleIngest(w http.ResponseWriter, r *http.Request) {
+
+	userID := r.Context().Value(UserIDKey).(string)
+
 	var req models.IngestRequest
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 		http.Error(w, "Invalid request payload", http.StatusBadRequest)
@@ -21,7 +24,7 @@ func (h *IngestHandler) HandleIngest(w http.ResponseWriter, r *http.Request) {
 
 	title, content, err := service.ExtractTextFromURL(req.URL)
 	if err != nil {
-		http.Error(w, "Erreur lors de l'extraction : "+err.Error(), http.StatusInternalServerError)
+		http.Error(w, "Error during extractionn : "+err.Error(), http.StatusInternalServerError)
 		return
 	}
 
@@ -37,6 +40,7 @@ func (h *IngestHandler) HandleIngest(w http.ResponseWriter, r *http.Request) {
 		URL:       req.URL,
 		Summary:   content[:200] + "...",
 		Embedding: embedding,
+		UserID:    userID,
 	}
 
 	if err := h.Repo.SaveArticle(article); err != nil {
