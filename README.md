@@ -24,8 +24,7 @@ High-performance RAG (Retrieval-Augmented Generation) engine built with Go. This
 
 go run cmd/main.go
 
-### 2. Frontend README (Next.js)
-À placer dans `my-ai-tool-ui/README.md`.
+### 2. Frontend (web client)
 
 # 🌌 Lumina UI
 
